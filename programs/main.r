@@ -43,3 +43,38 @@ atusrost2022 <- rio::import("atusrost_2022.RData")
 
 setwd("C:/Users/rache/OneDrive/Desktop/programming/final_project/final_project/")
 
+
+# Clean 2019 data
+dplyr::full_join(atusrost2019, atusresp2019,
+    by = c("TUCASEID", "TULINENO")) |>
+dplyr::filter(TULINENO == 1) |>
+dplyr::right_join(atusact2019, by = "TUCASEID") |>
+dplyr::mutate(YEAR = 2019) |>
+dplyr::mutate(MALE = case_when(
+    TESEX == 2 ~ 0,
+    TESEX == 1 ~ 1)) |>
+dplyr::mutate(ACTIVITY_GRP = case_when(
+    (TRCODE >= 30101 & TRCODE <= 30399) |
+        TRCODE %in% c(180301, 180302, 180303) ~ 1,
+    TRCODE >= 50101 & TRCODE <= 59999 ~ 3,
+    TRCODE >= 20101 & TRCODE <= 29999 ~ 4,
+    TRUE ~ 0)) |>
+dplyr::mutate(TUSTARTHOUR =
+    as.integer(substr(TUSTARTTIM, 1, 2))) |>
+dplyr::mutate(TUSTARTHOUR = case_when(
+    TUSTARTHOUR == 0 ~ 24,
+    TUSTARTHOUR == 1 ~ 25,
+    TUSTARTHOUR == 2 ~ 26,
+    TUSTARTHOUR == 3 ~ 27,
+    TRUE ~ TUSTARTHOUR
+)) |>
+dplyr::mutate(TUSTOPHOUR =
+    as.integer(substr(TUSTOPTIME, 1, 2))) |>
+dplyr::mutate(TUSTOPHOUR = case_when(
+    TUSTOPHOUR == 0 ~ 24,
+    TUSTOPHOUR == 1 ~ 25,
+    TUSTOPHOUR == 2 ~ 26,
+    TUSTOPHOUR == 3 ~ 27,
+    TRUE ~ TUSTOPHOUR
+)) ->
+atus2019
