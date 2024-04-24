@@ -1,6 +1,7 @@
 library(tidyverse)
 library(rio)
 library(testthat)
+library(testdat)
 library(ggpubr)
 
 setwd("C:/Users/rache/OneDrive/Desktop/programming/final_project/final_project/")
@@ -290,9 +291,10 @@ atus |>
     dplyr::filter(TUACTIVITY_N == 1) ->
 atus_filter
 
-## Run unit test
-source("tests/unit_test.r")
-#testthat::test_dir("tests")
+## Run unit test (more info on test in tests folder)
+test_that("This tests that there are no duplicates of individuals prior to mean collapse", {
+  expect_unique(data = atus_filter, c(TUCASEID))
+}) 
 
 atus_filter |>
     dplyr::mutate(EMPLOYED = case_when(
