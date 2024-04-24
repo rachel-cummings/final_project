@@ -275,3 +275,52 @@ atus2022 |>
    dplyr::filter(TUACTIVITY_N == 1) ->
 atus2022
 
+
+
+
+## Put years together and collapse
+atus <- bind_rows(
+    atus2019, atus2020, atus2021, atus2022
+)
+
+atus |>
+    dplyr::filter(TUDIARYDAY %in% 2:6) |>
+    dplyr::filter(TRHOLIDAY == 0) |>
+    dplyr::filter(TRHHCHILD == 1) |>
+    dplyr::filter(TUACTIVITY_N == 1) ->
+atus_filter
+
+## Run unit test
+source("tests/unit_test.r")
+#testthat::test_dir("tests")
+
+atus_filter |>
+    dplyr::mutate(EMPLOYED = case_when(
+        TRDPFTPT %in% c(1,2) ~ 1,
+        TRUE ~ 0)) ->
+atus_filter
+
+atus_filter |>
+    dplyr::mutate(MALEYEAR = paste(MALE, YEAR, sep = "")) |>
+    dplyr::select(MALEYEAR, TUFINLWGT, TUMAX4, TUMAX5, TUMAX6, TUMAX7, TUMAX8, TUMAX9, TUMAX10, TUMAX11, TUMAX12, TUMAX13, TUMAX14, TUMAX15, TUMAX16, TUMAX17, TUMAX18, TUMAX19, TUMAX20, TUMAX21, TUMAX22, TUMAX23, TUMAX24, TUMAX25, TUMAX26, TUMAX27) |>
+    dplyr::group_by(MALEYEAR) |>
+    dplyr::summarize(
+        TUMEAN4 = weighted.mean(TUMAX4, TUFINLWGT), TUMEAN5 = weighted.mean(TUMAX5, TUFINLWGT),
+        TUMEAN6 = weighted.mean(TUMAX6, TUFINLWGT), TUMEAN7 = weighted.mean(TUMAX7, TUFINLWGT),
+        TUMEAN8 = weighted.mean(TUMAX8, TUFINLWGT), TUMEAN9 = weighted.mean(TUMAX9, TUFINLWGT),
+        TUMEAN10 = weighted.mean(TUMAX10, TUFINLWGT), TUMEAN11 = weighted.mean(TUMAX11, TUFINLWGT),
+        TUMEAN12 = weighted.mean(TUMAX12, TUFINLWGT), TUMEAN13 = weighted.mean(TUMAX13, TUFINLWGT),
+        TUMEAN14 = weighted.mean(TUMAX14, TUFINLWGT), TUMEAN15 = weighted.mean(TUMAX15, TUFINLWGT),
+        TUMEAN16 = weighted.mean(TUMAX16, TUFINLWGT), TUMEAN17 = weighted.mean(TUMAX17, TUFINLWGT),
+        TUMEAN18 = weighted.mean(TUMAX18, TUFINLWGT), TUMEAN19 = weighted.mean(TUMAX19, TUFINLWGT),
+        TUMEAN20 = weighted.mean(TUMAX20, TUFINLWGT), TUMEAN21 = weighted.mean(TUMAX21, TUFINLWGT),
+        TUMEAN22 = weighted.mean(TUMAX22, TUFINLWGT), TUMEAN23 = weighted.mean(TUMAX23, TUFINLWGT),
+        TUMEAN24 = weighted.mean(TUMAX24, TUFINLWGT), TUMEAN25 = weighted.mean(TUMAX25, TUFINLWGT),
+        TUMEAN26 = weighted.mean(TUMAX26, TUFINLWGT), TUMEAN27 = weighted.mean(TUMAX27, TUFINLWGT)
+    ) ->
+atus_maleyear_means
+
+
+
+
+
