@@ -410,5 +410,5 @@ values = c(
         "#FFD1D1", "#164B75", "#367DBA",
         "#73B1F2", "#C9E0FF"
     ))
-ggplot2::ggsave("ChildcareEmployed2.png", plot = ChildcareEmployedPlot)
+ggplot2::ggsave("ChildcareEmployed.png", plot = ChildcareEmployedPlot)
 
