@@ -324,3 +324,91 @@ atus_maleyear_means
 
 
 
+## Figure for all people (regardless of employment status)
+atus_maleyear_means |>
+    pivot_longer(-c("MALEYEAR")) |>
+    mutate(hour = as.integer(stringr::str_extract(name, "\\d{1,2}"))) ->
+atus_maleyear_means_long
+
+ChildcareAllPlot <- ggpubr::ggline(
+    data = atus_maleyear_means_long,
+    x = "hour", y = "value", group = "MALEYEAR",
+    numeric.x.axis = TRUE, color = "MALEYEAR",
+    palette = c(
+        "#703338", "#B45B62", "#EF8F94",
+        "#FFD1D1", "#164B75", "#367DBA",
+        "#73B1F2", "#C9E0FF"
+    ),
+    title = "Childcare, Workdays, All",
+    xlab = "Hour", ylab = "Percent",
+    legend.title = "Gender/Year",
+    ggtheme = theme_pubr()
+) +
+ggplot2::scale_x_continuous(breaks = 0:7 * 4) +
+scale_color_manual(labels = c(
+    "W, 2019", "W, 2020", "W, 2021", "W, 2022",
+    "M, 2019", "M, 2020", "M, 2021", "M, 2022"
+),
+values = c(
+        "#703338", "#B45B62", "#EF8F94",
+        "#FFD1D1", "#164B75", "#367DBA",
+        "#73B1F2", "#C9E0FF"
+    ))
+setwd("C:/Users/rache/OneDrive/Desktop/programming/final_project/final_project/figures")
+ggplot2::ggsave("ChildcareAll.png", plot = ChildcareAllPlot)
+
+
+
+## Now make figure that only includes employed people
+atus_filter |>
+    dplyr::filter(EMPLOYED == 1) |>
+    dplyr::mutate(MALEYEAR = paste(MALE, YEAR, sep = "")) |>
+    dplyr::select(MALEYEAR, TUFINLWGT, TUMAX4, TUMAX5, TUMAX6, TUMAX7, TUMAX8, TUMAX9, TUMAX10, TUMAX11, TUMAX12, TUMAX13, TUMAX14, TUMAX15, TUMAX16, TUMAX17, TUMAX18, TUMAX19, TUMAX20, TUMAX21, TUMAX22, TUMAX23, TUMAX24, TUMAX25, TUMAX26, TUMAX27) |>
+    dplyr::group_by(MALEYEAR) |>
+    dplyr::summarize(
+        TUMEAN4 = weighted.mean(TUMAX4, TUFINLWGT), TUMEAN5 = weighted.mean(TUMAX5, TUFINLWGT),
+        TUMEAN6 = weighted.mean(TUMAX6, TUFINLWGT), TUMEAN7 = weighted.mean(TUMAX7, TUFINLWGT),
+        TUMEAN8 = weighted.mean(TUMAX8, TUFINLWGT), TUMEAN9 = weighted.mean(TUMAX9, TUFINLWGT),
+        TUMEAN10 = weighted.mean(TUMAX10, TUFINLWGT), TUMEAN11 = weighted.mean(TUMAX11, TUFINLWGT),
+        TUMEAN12 = weighted.mean(TUMAX12, TUFINLWGT), TUMEAN13 = weighted.mean(TUMAX13, TUFINLWGT),
+        TUMEAN14 = weighted.mean(TUMAX14, TUFINLWGT), TUMEAN15 = weighted.mean(TUMAX15, TUFINLWGT),
+        TUMEAN16 = weighted.mean(TUMAX16, TUFINLWGT), TUMEAN17 = weighted.mean(TUMAX17, TUFINLWGT),
+        TUMEAN18 = weighted.mean(TUMAX18, TUFINLWGT), TUMEAN19 = weighted.mean(TUMAX19, TUFINLWGT),
+        TUMEAN20 = weighted.mean(TUMAX20, TUFINLWGT), TUMEAN21 = weighted.mean(TUMAX21, TUFINLWGT),
+        TUMEAN22 = weighted.mean(TUMAX22, TUFINLWGT), TUMEAN23 = weighted.mean(TUMAX23, TUFINLWGT),
+        TUMEAN24 = weighted.mean(TUMAX24, TUFINLWGT), TUMEAN25 = weighted.mean(TUMAX25, TUFINLWGT),
+        TUMEAN26 = weighted.mean(TUMAX26, TUFINLWGT), TUMEAN27 = weighted.mean(TUMAX27, TUFINLWGT)
+    ) ->
+atus_maleyear_means_emp
+
+atus_maleyear_means_emp |>
+    pivot_longer(-c("MALEYEAR")) |>
+    mutate(hour = as.integer(stringr::str_extract(name, "\\d{1,2}"))) ->
+atus_maleyear_means_emp_long
+
+ChildcareEmployedPlot <- ggpubr::ggline(
+    data = atus_maleyear_means_emp_long,
+    x = "hour", y = "value", group = "MALEYEAR",
+    numeric.x.axis = TRUE, color = "MALEYEAR",
+    palette = c(
+        "#703338", "#B45B62", "#EF8F94",
+        "#FFD1D1", "#164B75", "#367DBA",
+        "#73B1F2", "#C9E0FF"
+    ),
+    title = "Childcare, Workdays, Employed",
+    xlab = "Hour", ylab = "Percent",
+    legend.title = "Gender/Year",
+    ggtheme = theme_pubr()
+) +
+ggplot2::scale_x_continuous(breaks = 0:7 * 4) +
+scale_color_manual(labels = c(
+    "W, 2019", "W, 2020", "W, 2021", "W, 2022",
+    "M, 2019", "M, 2020", "M, 2021", "M, 2022"
+),
+values = c(
+        "#703338", "#B45B62", "#EF8F94",
+        "#FFD1D1", "#164B75", "#367DBA",
+        "#73B1F2", "#C9E0FF"
+    ))
+ggplot2::ggsave("ChildcareEmployed2.png", plot = ChildcareEmployedPlot)
+
