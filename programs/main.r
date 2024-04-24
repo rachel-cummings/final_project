@@ -99,3 +99,179 @@ atus2019 |>
    dplyr::filter(TUACTIVITY_N == 1) ->
 atus2019
 
+
+
+# Clean 2020 data
+dplyr::full_join(atusrost2020, atusresp2020,
+    by = c("TUCASEID", "TULINENO")) |>
+dplyr::filter(TULINENO == 1) |>
+dplyr::right_join(atusact2020, by = "TUCASEID") |>
+dplyr::rename(TUFINLWGT = TU20FWGT) |>
+dplyr::mutate(YEAR = 2020) |>
+dplyr::mutate(MALE = case_when(
+    TESEX == 2 ~ 0,
+    TESEX == 1 ~ 1)) |>
+dplyr::mutate(ACTIVITY_GRP = case_when(
+    (TRCODE >= 30101 & TRCODE <= 30399) |
+        TRCODE %in% c(180301, 180302, 180303) ~ 1,
+    TRCODE >= 50101 & TRCODE <= 59999 ~ 3,
+    TRCODE >= 20101 & TRCODE <= 29999 ~ 4,
+    TRUE ~ 0)) |>
+dplyr::mutate(TUSTARTHOUR =
+    as.integer(substr(TUSTARTTIM, 1, 2))) |>
+dplyr::mutate(TUSTARTHOUR = case_when(
+    TUSTARTHOUR == 0 ~ 24,
+    TUSTARTHOUR == 1 ~ 25,
+    TUSTARTHOUR == 2 ~ 26,
+    TUSTARTHOUR == 3 ~ 27,
+    TRUE ~ TUSTARTHOUR
+)) |>
+dplyr::mutate(TUSTOPHOUR =
+    as.integer(substr(TUSTOPTIME, 1, 2))) |>
+dplyr::mutate(TUSTOPHOUR = case_when(
+    TUSTOPHOUR == 0 ~ 24,
+    TUSTOPHOUR == 1 ~ 25,
+    TUSTOPHOUR == 2 ~ 26,
+    TUSTOPHOUR == 3 ~ 27,
+    TRUE ~ TUSTOPHOUR
+)) ->
+atus2020
+
+for (iHour in 4:27) {
+    TUHour <- as.integer((iHour >= atus2020$TUSTARTHOUR & iHour <= atus2020$TUSTOPHOUR) & atus2020$ACTIVITY_GRP == 1)
+    atus2020[paste("TU", iHour, sep = "")] <- TUHour
+
+    TUCaseHour <- data.frame(dplyr::bind_cols(
+        atus2020$TUCASEID, TUHour))
+    colnames(TUCaseHour) <- c("TUCASEID", "TUHOUR")
+    TUCaseHour |>
+        dplyr::group_by(TUCASEID) |>
+        mutate(TUHOURMAX = max(TUHOUR)) |>
+        dplyr::ungroup() ->
+    TUCaseHour
+    atus2020[paste("TUMAX", iHour, sep = "")] <-
+        TUCaseHour$TUHOURMAX
+}
+
+atus2020 |>
+   dplyr::filter(TUACTIVITY_N == 1) ->
+atus2020
+
+
+
+
+
+## Clean 2021 data
+dplyr::full_join(atusrost2021, atusresp2021,
+    by = c("TUCASEID", "TULINENO")) |>
+dplyr::filter(TULINENO == 1) |>
+dplyr::right_join(atusact2021, by = "TUCASEID") |>
+dplyr::mutate(YEAR = 2021) |>
+dplyr::mutate(MALE = case_when(
+    TESEX == 2 ~ 0,
+    TESEX == 1 ~ 1)) |>
+dplyr::mutate(ACTIVITY_GRP = case_when(
+    (TRCODE >= 30101 & TRCODE <= 30399) |
+        TRCODE %in% c(180301, 180302, 180303) ~ 1,
+    TRCODE >= 50101 & TRCODE <= 59999 ~ 3,
+    TRCODE >= 20101 & TRCODE <= 29999 ~ 4,
+    TRUE ~ 0)) |>
+dplyr::mutate(TUSTARTHOUR =
+    as.integer(substr(TUSTARTTIM, 1, 2))) |>
+dplyr::mutate(TUSTARTHOUR = case_when(
+    TUSTARTHOUR == 0 ~ 24,
+    TUSTARTHOUR == 1 ~ 25,
+    TUSTARTHOUR == 2 ~ 26,
+    TUSTARTHOUR == 3 ~ 27,
+    TRUE ~ TUSTARTHOUR
+)) |>
+dplyr::mutate(TUSTOPHOUR =
+    as.integer(substr(TUSTOPTIME, 1, 2))) |>
+dplyr::mutate(TUSTOPHOUR = case_when(
+    TUSTOPHOUR == 0 ~ 24,
+    TUSTOPHOUR == 1 ~ 25,
+    TUSTOPHOUR == 2 ~ 26,
+    TUSTOPHOUR == 3 ~ 27,
+    TRUE ~ TUSTOPHOUR
+)) ->
+atus2021
+
+for (iHour in 4:27) {
+    TUHour <- as.integer((iHour >= atus2021$TUSTARTHOUR & iHour <= atus2021$TUSTOPHOUR) & atus2021$ACTIVITY_GRP == 1)
+    atus2021[paste("TU", iHour, sep = "")] <- TUHour
+
+    TUCaseHour <- data.frame(dplyr::bind_cols(
+        atus2021$TUCASEID, TUHour))
+    colnames(TUCaseHour) <- c("TUCASEID", "TUHOUR")
+    TUCaseHour |>
+        dplyr::group_by(TUCASEID) |>
+        mutate(TUHOURMAX = max(TUHOUR)) |>
+        dplyr::ungroup() ->
+    TUCaseHour
+    atus2021[paste("TUMAX", iHour, sep = "")] <-
+        TUCaseHour$TUHOURMAX
+}
+
+atus2021 |>
+   dplyr::filter(TUACTIVITY_N == 1) ->
+atus2021
+
+
+
+
+
+## Clean 2022 data
+dplyr::full_join(atusrost2022, atusresp2022,
+    by = c("TUCASEID", "TULINENO")) |>
+dplyr::filter(TULINENO == 1) |>
+dplyr::right_join(atusact2022, by = "TUCASEID") |>
+dplyr::mutate(YEAR = 2022) |>
+dplyr::mutate(MALE = case_when(
+    TESEX == 2 ~ 0,
+    TESEX == 1 ~ 1)) |>
+dplyr::mutate(ACTIVITY_GRP = case_when(
+    (TRCODE >= 30101 & TRCODE <= 30399) |
+        TRCODE %in% c(180301, 180302, 180303) ~ 1,
+    TRCODE >= 50101 & TRCODE <= 59999 ~ 3,
+    TRCODE >= 20101 & TRCODE <= 29999 ~ 4,
+    TRUE ~ 0)) |>
+dplyr::mutate(TUSTARTHOUR =
+    as.integer(substr(TUSTARTTIM, 1, 2))) |>
+dplyr::mutate(TUSTARTHOUR = case_when(
+    TUSTARTHOUR == 0 ~ 24,
+    TUSTARTHOUR == 1 ~ 25,
+    TUSTARTHOUR == 2 ~ 26,
+    TUSTARTHOUR == 3 ~ 27,
+    TRUE ~ TUSTARTHOUR
+)) |>
+dplyr::mutate(TUSTOPHOUR =
+    as.integer(substr(TUSTOPTIME, 1, 2))) |>
+dplyr::mutate(TUSTOPHOUR = case_when(
+    TUSTOPHOUR == 0 ~ 24,
+    TUSTOPHOUR == 1 ~ 25,
+    TUSTOPHOUR == 2 ~ 26,
+    TUSTOPHOUR == 3 ~ 27,
+    TRUE ~ TUSTOPHOUR
+)) ->
+atus2022
+
+for (iHour in 4:27) {
+    TUHour <- as.integer((iHour >= atus2022$TUSTARTHOUR & iHour <= atus2022$TUSTOPHOUR) & atus2022$ACTIVITY_GRP == 1)
+    atus2022[paste("TU", iHour, sep = "")] <- TUHour
+
+    TUCaseHour <- data.frame(dplyr::bind_cols(
+        atus2022$TUCASEID, TUHour))
+    colnames(TUCaseHour) <- c("TUCASEID", "TUHOUR")
+    TUCaseHour |>
+        dplyr::group_by(TUCASEID) |>
+        mutate(TUHOURMAX = max(TUHOUR)) |>
+        dplyr::ungroup() ->
+    TUCaseHour
+    atus2022[paste("TUMAX", iHour, sep = "")] <-
+        TUCaseHour$TUHOURMAX
+}
+
+atus2022 |>
+   dplyr::filter(TUACTIVITY_N == 1) ->
+atus2022
+
