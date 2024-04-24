@@ -78,3 +78,24 @@ dplyr::mutate(TUSTOPHOUR = case_when(
     TRUE ~ TUSTOPHOUR
 )) ->
 atus2019
+
+for (iHour in 4:27) {
+    TUHour <- as.integer((iHour >= atus2019$TUSTARTHOUR & iHour <= atus2019$TUSTOPHOUR) & atus2019$ACTIVITY_GRP == 1)
+    atus2019[paste("TU", iHour, sep = "")] <- TUHour
+
+    TUCaseHour <- data.frame(dplyr::bind_cols(
+        atus2019$TUCASEID, TUHour))
+    colnames(TUCaseHour) <- c("TUCASEID", "TUHOUR")
+    TUCaseHour |>
+        dplyr::group_by(TUCASEID) |>
+        mutate(TUHOURMAX = max(TUHOUR)) |>
+        dplyr::ungroup() ->
+    TUCaseHour
+    atus2019[paste("TUMAX", iHour, sep = "")] <-
+        TUCaseHour$TUHOURMAX
+}
+
+atus2019 |>
+   dplyr::filter(TUACTIVITY_N == 1) ->
+atus2019
+
